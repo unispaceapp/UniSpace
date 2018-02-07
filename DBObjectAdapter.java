@@ -1,7 +1,7 @@
 import org.jsoup.nodes.Element;
 
 /**
- * Converts HTML elements into JSoup objects
+ * Converts HTML elements into JSoup objectss
  */
 public class DBObjectAdapter {
 

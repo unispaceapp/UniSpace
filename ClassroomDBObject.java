@@ -8,6 +8,7 @@ public class ClassroomDBObject {
 
 
     public ClassroomDBObject() {
+        //In case have a break
         times = new ArrayList<>();
     }
 

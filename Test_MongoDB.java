@@ -5,7 +5,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 public class Test_MongoDB {
-
+    //Test class
     public static void main(String[] argv) {
 
         StringBuilder s = new StringBuilder();

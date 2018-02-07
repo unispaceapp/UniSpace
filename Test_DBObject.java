@@ -4,7 +4,7 @@ import com.mongodb.BasicDBObject;
 
 public class Test_DBObject extends BasicDBObject {
 
-
+        //tEST OBJECT
         private static final long serialVersionUID = 2105061907470199595L;
         //should be something shorter as "name" like "n"
         //here just use name to conform your  sample

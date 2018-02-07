@@ -13,7 +13,7 @@ public class WebScraper {
     private DBObjectAdapter objectAdapter;
 
     public static void main(String[] args) {
-
+        //main
         WebScraper ws = new WebScraper();
         ws.TestFunction();
     }
