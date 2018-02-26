@@ -4,7 +4,7 @@ public class ClassroomDBObject {
 
     private int classNumber;
     private int buildingNumber;
-    private ArrayList<ArrayList<Integer>> times;
+    private ArrayList<Integer> times;
     private String day;
     private char semester;
 
@@ -12,6 +12,7 @@ public class ClassroomDBObject {
     public ClassroomDBObject() {
         //In case have a break
         times = new ArrayList<>();
+        times.add(10);
     }
 
     public void SetClassNumber(int num) {
@@ -28,7 +29,7 @@ public class ClassroomDBObject {
         return buildingNumber;
     }
 
-    public void AddTime(ArrayList<Integer> time) {
+    public void AddTime(Integer time) {
         times.add(time);
     }
 
@@ -45,5 +46,9 @@ public class ClassroomDBObject {
 
     public String getDay() {
         return day;
+    }
+
+    public int getHour() {
+        return times.get(0);
     }
 }

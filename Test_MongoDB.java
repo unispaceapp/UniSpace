@@ -3,10 +3,14 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+
+import java.nio.charset.Charset;
 
 public class Test_MongoDB {
     //Test classes
     public static void main(String[] argv) {
+
 
         StringBuilder s = new StringBuilder();
         MongoClientURI uri = new MongoClientURI("mongodb://nirchook:agent777@ds125198.mlab.com:25198/unispace");
@@ -18,12 +22,36 @@ public class Test_MongoDB {
 
         Test_DBObject obj = new Test_DBObject();
         obj.setNo(4);
-        obj.setName("Nirchookee");
+        obj.setName("Building");
         Document testerD = new Document();
-        testerD.append("Name", obj.getName());
+
+        testerD.append("building", 1004);
+        testerD.append("12", 0);
+        testerD.append("13", 1);
         mc.insertOne(testerD);
 
-        FindIterable cursor = mc.find();
+
+        //IF CLASSROOM AND BUILDING ALREADY IN DB, JUST UPDATE TIMES
+        BasicDBObject whereQuery = new BasicDBObject();
+        whereQuery.put("building", 1004);
+        FindIterable cursor = mc.find(whereQuery);
+        boolean exists = false;
+        for(Object i : cursor) {
+            System.out.println(
+                    i);
+        }
+        for(Object i: cursor) {
+            exists = true;
+        }
+        if(exists) {
+            Document d = new Document("building", 1004);
+            Bson filter = d;
+            Bson newValue = new Document("12", 1);
+            Bson updateOperationDocument = new Document("$set", newValue);
+            mc.updateOne(filter, updateOperationDocument);
+
+        }
+         cursor = mc.find(whereQuery);
         for(Object i : cursor) {
             System.out.println(
                     i);
