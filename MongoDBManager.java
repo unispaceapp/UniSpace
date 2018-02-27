@@ -75,17 +75,25 @@ public class MongoDBManager {
         if(exists) {
             Document d = new Document("building", classroom.getBuildingNumber());
             Bson filter = d.append("room", classroom.getClassNumber());
-            Bson newValue = new Document(Integer.toString(classroom.getHour()), 1);
+            ArrayList<Integer> hours = classroom.getHours();
+            Document nVal = new Document();
+            for(Integer hour : hours) {
+                nVal.append(Integer.toString(hour), 1);
+            }
+            Bson newValue = new Document(nVal);
             Bson updateOperationDocument = new Document("$set", newValue);
             mc.updateOne(filter, updateOperationDocument);
         }
 
-        //ELSE, ADD WHOLE ROW
+        //ELSE, ADD WHOLE ENTRY TO DB
         Document newClass = new Document(basicDoc);
         newClass.append("building", classroom.getBuildingNumber());
         newClass.append("room", classroom.getClassNumber());
-        newClass.remove(Integer.toString(classroom.getHour()));
-        newClass.append(Integer.toString(classroom.getHour()), 1);
+        ArrayList<Integer> hours = classroom.getHours();
+        for(Integer hour : hours) {
+            newClass.remove(Integer.toString(hour));
+            newClass.append(Integer.toString(hour), 1);
+        }
         mc.insertOne(newClass);
 
         return true;

@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 
 import javax.script.*;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -23,29 +24,24 @@ public class WebScraper {
     private DBObjectAdapter objectAdapter;
 
     public static void main(String[] args) {
-        //main
         WebScraper ws = new WebScraper();
         ws.ScrapeAllPages();
     }
 
 
     public WebScraper() {
+        //TODO uncomment when ready
         //DBManager = new MongoDBManager();
         objectAdapter = new DBObjectAdapter();
     }
 
 
     public void ScrapeAllPages() {
-        // GET FIRST PAGE OF COURSES
-        Document currentPage = GetFirstPage();
 
-        Element e = currentPage.select("#ContentPlaceHolder1_gvLessons > tbody > tr:nth-child(24) > td > table > tbody").first();
-        // SCRAPE FIRST PAGE
-        ScrapeSinglePage(currentPage);
-
-        // LOOP THROUGH REST OF PAGES
+        Document currentPage = GetFirstPage();  // GET FIRST PAGE OF COURSES
+        ScrapeSinglePage(currentPage);  // SCRAPE FIRST PAGE
         //TODO do all pages, not just 2-5
-        for(int index = 2; index < 5; index++) {
+        for(int index = 2; index < 5; index++) {  // LOOP THROUGH REST OF PAGES
             currentPage = GetNextPage(currentPage, index);
             ScrapeSinglePage(currentPage);
         }
@@ -55,33 +51,27 @@ public class WebScraper {
 
         try {
 
-            //GET TABLE WITH COURSES
-            Element table = page.getElementById("ContentPlaceHolder1_gvLessons");
+            Element table = page.getElementById("ContentPlaceHolder1_gvLessons");  //GET TABLE WITH COURSES
             ArrayList<Element> t = table.getElementsByTag("tbody");
             Element tt = t.get(0);
             int rowCounter = 2;
             Element row = tt.children().get(rowCounter);
-            //Loop until text in td/row is equal to &nbsp
-            while (!row.getElementsByTag("td").first().text().equals("&nbsp")) {
-                //Gets link to the course details
-                Element link = row.getElementById("ContentPlaceHolder1_gvLessons_lnkDetails_" + Integer.toString(rowCounter - 2));
+
+            while (!row.getElementsByTag("td").first().text().equals("&nbsp")) {  //Loop until text in td/row is equal to &nbsp
+                Element link = row.getElementById("ContentPlaceHolder1_gvLessons_lnkDetails_" + Integer.toString(rowCounter - 2));  //Gets link to the course details
                 if(link == null) {
                     break;
                 }
                 Attributes id = link.attributes();
                 String s = id.asList().get(2).toString();
                 s = s.substring(6, s.length() - 1);
-                //Opens up the link
-                Document courseD = Jsoup.connect("https://shoham.biu.ac.il/BiuCoursesViewer/" + s).get();
+                Document courseD = Jsoup.connect("https://shoham.biu.ac.il/BiuCoursesViewer/" + s).get();     //Opens up the link to course details
                 ArrayList<Element> tbody = courseD.getElementsByTag("tbody");
                 Element cTable = tbody.get(1);
-                //System.out.println("id: " + s);
-                //Gets classroom info
-                createClassroom(cTable.getElementById("ContentPlaceHolder1_tdHours").text(),
-                        cTable.getElementById("ContentPlaceHolder1_tdDayOfTheWeek").text(),
-                        cTable.getElementById("ContentPlaceHolder1_tdSessionStartHour").text(),
-                        cTable.getElementById("ContentPlaceHolder1_tdBuilding").text(),
-                        cTable.getElementById("ContentPlaceHolder1_tdRoom").text());
+                ClassroomDBObject classroom = objectAdapter.Convert(cTable);
+                //TODO uncomment when ready
+                // DBManager.AddToDB(classroom);
+
                 rowCounter++;
                 row = tt.children().get(rowCounter);
             }
@@ -91,75 +81,6 @@ public class WebScraper {
     }
 
 
-    private void createClassroom(String semester, String day, String hour, String building, String room){
-        //System.out.println("Sem: " +semester + " day: "+ day + " hour: "+hour+" building: "+building+" room: "+room);
-        if (!building.equals("")) {
-            ClassroomDBObject classroom = new ClassroomDBObject();
-            if (semester.length()>17){
-                classroom.setSemester('Y');
-            } else {
-                //TODO maybe only add second semester for now?
-                String sem = semester.substring(6, 7);
-                if (sem.equals("א")) {
-                    classroom.setSemester('A');
-                } else {
-                    classroom.setSemester('B');
-                }
-            }
-
-            String HebDay = day.substring(0,1);
-            char engDay = HebDay.toCharArray()[0];
-
-            switch(engDay) {
-
-                case 1488:
-                    classroom.setDay("Sunday");
-                    break;
-                case 1489:
-                    classroom.setDay("Monday");
-                    break;
-                case 1490:
-                    classroom.setDay("Tuesday");
-                    break;
-                case 1491:
-                    classroom.setDay("Wednesday");
-                    break;
-                case 1492:
-                    classroom.setDay("Thursday");
-                    break;
-                case 1493:
-                    classroom.setDay("Friday");
-                    break;
-                default:
-                    System.out.println("*** DAY UNMATCHED! ***");
-
-            }
-
-            String b = "";
-            for(Character c : building.toCharArray()) {
-                if(Character.isDigit(c)) {
-                    b += c;
-                }
-            }
-
-            classroom.SetBuildingNumber(Integer.parseInt(b));
-            //TODO falls here when there are two classrooms - put in as two different entries
-            classroom.SetClassNumber(Integer.parseInt(room));
-
-            //TODO add hours, and change how it is written in Mongodb
-
-            //TODO uncomment when ready
-           // DBManager.AddToDB(classroom);
-
-
-            System.out.println("****   Sem: "+classroom.getSemester()+" day: "+classroom.getDay() +" building: "+classroom.getBuildingNumber()+" room: "+classroom.getClassNumber() + " ****");
-            System.out.println();
-
-
-        }
-
-
-    }
     public Document GetNextPage(Document prevPage, int pageNum) {
         LinkedHashMap<String,String> param = new LinkedHashMap<>();
         Document nextPage = null;

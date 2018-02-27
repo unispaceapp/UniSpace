@@ -10,9 +10,7 @@ public class ClassroomDBObject {
 
 
     public ClassroomDBObject() {
-        //In case have a break
         times = new ArrayList<>();
-        times.add(10);
     }
 
     public void SetClassNumber(int num) {
@@ -40,15 +38,61 @@ public class ClassroomDBObject {
         return semester;
     }
 
-    public void setDay(String day) {
-        this.day = day;
+    public void setDay(String HebDay) {
+        char engDay = HebDay.toCharArray()[0];
+        switch(engDay) {
+
+            case 1488:
+                this.day = "Sunday";
+                break;
+            case 1489:
+                this.day = "Monday";
+                break;
+            case 1490:
+                this.day = "Tuesday";
+                break;
+            case 1491:
+                this.day = "Wednesday";
+                break;
+            case 1492:
+                this.day = "Thursday";
+                break;
+            case 1493:
+                this.day =  "Friday";
+                break;
+            default:
+                System.out.println("*** DAY UNMATCHED! ***");
+
+        }
     }
 
     public String getDay() {
         return day;
     }
 
-    public int getHour() {
-        return times.get(0);
+    public ArrayList<Integer> getHours() {
+        return times;
+    }
+
+    public void SetHours(String h) {
+        String hours = h.replace(":00", "");
+        hours = hours.replace(" - ", " ");
+        String[] allTimes = hours.split(" ");
+        int f = 0;
+        int to = 0;
+        if(allTimes.length > 2) {
+             f = Integer.parseInt(allTimes[2]);
+             to = Integer.parseInt(allTimes[3]);
+        } else {
+             f = Integer.parseInt(allTimes[0]);
+             to = Integer.parseInt(allTimes[1]);
+        }
+        //System.out.println("ALL MY TIMES: ");
+        while(f <= to) {
+            //System.out.println(f);
+            times.add(f);
+            f++;
+
+        }
     }
 }
