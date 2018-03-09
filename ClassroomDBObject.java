@@ -27,10 +27,6 @@ public class ClassroomDBObject {
         return buildingNumber;
     }
 
-    public void AddTime(Integer time) {
-        times.add(time);
-    }
-
     public void setSemester(char sem) {
         semester = sem;
     }
