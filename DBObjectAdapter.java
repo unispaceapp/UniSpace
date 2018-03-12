@@ -22,7 +22,7 @@ public class DBObjectAdapter {
 
         if (!building.equals("") && !room.equals("") && !hour.equals("")) {
             if (semester.length() > 17) {
-                classroom.setSemester('Y');
+                classroom.setSemester('B');
             } else {
                 //TODO  only add second semester for now!
                 String sem = semester.substring(6, 7);

@@ -57,6 +57,10 @@ public class MongoDBManager {
 
     public boolean AddToDB(ClassroomDBObject classroom) {
 
+        //checking if semester B, if not returns false
+        if(classroom.getSemester()!='B'){
+            return false;
+        }
 
         //GET CORRECT TABLE FROM DATABASE
         MongoCollection mc = collections.get(classroom.getDay());
@@ -83,6 +87,7 @@ public class MongoDBManager {
             Bson newValue = new Document(nVal);
             Bson updateOperationDocument = new Document("$set", newValue);
             mc.updateOne(filter, updateOperationDocument);
+            return true;
         }
 
         //ELSE, ADD WHOLE ENTRY TO DB

@@ -84,7 +84,7 @@ public class ClassroomDBObject {
              to = Integer.parseInt(allTimes[1]);
         }
         //System.out.println("ALL MY TIMES: ");
-        while(f <= to) {
+        while(f <= to-1) {
             //System.out.println(f);
             times.add(f);
             f++;
