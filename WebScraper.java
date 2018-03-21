@@ -31,7 +31,7 @@ public class WebScraper {
 
     public WebScraper() {
         //TODO uncomment when ready
-        DBManager = new MongoDBManager();
+        // //DBManager = new MongoDBManager();
         objectAdapter = new DBObjectAdapter();
     }
 
@@ -41,7 +41,7 @@ public class WebScraper {
         Document currentPage = GetFirstPage();  // GET FIRST PAGE OF COURSES
         ScrapeSinglePage(currentPage);  // SCRAPE FIRST PAGE
         //TODO do all pages, not just 2-5
-        for(int index = 2; index < 51; index++) {  // LOOP THROUGH REST OF PAGES
+        for(int index =2 ; index < 20; index++) {  // LOOP THROUGH REST OF PAGES
             currentPage = GetNextPage(currentPage, index);
             System.out.println("************************************** page number: "+index+" *********************************************************");
             ScrapeSinglePage(currentPage);
@@ -71,7 +71,7 @@ public class WebScraper {
                 Element cTable = tbody.get(1);
                 ClassroomDBObject classroom = objectAdapter.Convert(cTable);
                 //TODO uncomment when ready
-                 DBManager.AddToDB(classroom);
+                 //DBManager.AddToDB(classroom);
 
                 rowCounter++;
                 if (tt.children().get(rowCounter-1).equals(tt.children().last())){
@@ -104,7 +104,7 @@ public class WebScraper {
              nextPage = Jsoup.connect("https://shoham.biu.ac.il/BiuCoursesViewer/CoursesView.aspx?")
                     .ignoreContentType(true)
                     .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36")
-                    .cookie("ASP.NET_SessionId", "xluz2kctahoj455rrf5n31kx")
+                    .cookie("ASP.NET_SessionId", "ib1bhxgycggwe15vcfoqpncc")
                     .data(param).post();
         } catch (IOException e) {
             e.printStackTrace();

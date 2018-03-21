@@ -10,7 +10,7 @@ public class DBObjectAdapter {
         ClassroomDBObject room = createClassroom(cTable.getElementById("ContentPlaceHolder1_tdHours").text(),
                 cTable.getElementById("ContentPlaceHolder1_tdDayOfTheWeek").text(),
                 cTable.getElementById("ContentPlaceHolder1_tdSessionStartHour").text(),
-                cTable.getElementById("ContentPlaceHolder1_tdBuilding").text(),
+                cTable.getElementById("ContentPlaceHolder1_tdBuilding").getElementsByTag("td").first().text(),
                 cTable.getElementById("ContentPlaceHolder1_tdRoom").getElementsByTag("td").first().text());
         return room;
     }
@@ -47,6 +47,11 @@ public class DBObjectAdapter {
             if (room.contains(" ")) {
                 String[] rooms = room.split(" ");
             }
+
+            if(b.equals("")) {
+                return classroom;
+            }
+            //TODO saw that two classrooms are being taken as one, like 102203 in 507
             classroom.SetBuildingNumber(Integer.parseInt(b));
 
             String r = "";

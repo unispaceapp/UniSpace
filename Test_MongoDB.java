@@ -58,20 +58,5 @@ public class Test_MongoDB {
         }
         mongoClient.close();
 
-
-
-
-
-
-
-
-//        Test_DBObject obj = new Test_DBObject();
-//        obj.setNo(4);
-//        obj.setName("Nirchook");
-       // mc.insertOne(obj);
-
-
-
-
     }
 }
