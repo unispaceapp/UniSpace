@@ -41,9 +41,18 @@ public class WebScraper {
         Document currentPage = GetFirstPage();  // GET FIRST PAGE OF COURSES
         ScrapeSinglePage(currentPage);  // SCRAPE FIRST PAGE
         //TODO do all pages, not just 2-5
-        for(int index =2 ; index < 20; index++) {  // LOOP THROUGH REST OF PAGES
+        for(int index =11 ; index < 400; index+=10) {// LOOP THROUGH REST OF PAGES
+            /*if(index==15){
+                index++;
+            }*/
             currentPage = GetNextPage(currentPage, index);
             System.out.println("************************************** page number: "+index+" *********************************************************");
+            /*if (index==51){
+                currentPage = GetNextPage(currentPage, index+5);
+                System.out.println("************************************** page number: "+index+" *********************************************************");
+                ScrapeSinglePage(currentPage);
+            }*/
+
             ScrapeSinglePage(currentPage);
         }
     }
@@ -70,8 +79,10 @@ public class WebScraper {
                 ArrayList<Element> tbody = courseD.getElementsByTag("tbody");
                 Element cTable = tbody.get(1);
                 ClassroomDBObject classroom = objectAdapter.Convert(cTable);
-                //TODO uncomment when ready
-                 //DBManager.AddToDB(classroom);
+                if (classroom != null) {
+                    //TODO uncomment when ready
+                    //DBManager.AddToDB(classroom);
+                }
 
                 rowCounter++;
                 if (tt.children().get(rowCounter-1).equals(tt.children().last())){
@@ -104,7 +115,7 @@ public class WebScraper {
              nextPage = Jsoup.connect("https://shoham.biu.ac.il/BiuCoursesViewer/CoursesView.aspx?")
                     .ignoreContentType(true)
                     .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36")
-                    .cookie("ASP.NET_SessionId", "ib1bhxgycggwe15vcfoqpncc")
+                    .cookie("ASP.NET_SessionId", "l4sdcy5b4dyrogn1k42ql5yi")
                     .data(param).post();
         } catch (IOException e) {
             e.printStackTrace();

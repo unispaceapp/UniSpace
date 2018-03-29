@@ -70,13 +70,13 @@ public class ClassroomDBObject {
         return times;
     }
 
-    public void SetHours(String h) {
-        String hours = h.replace(":00", "");
+    public void SetHours(String[] allTimes) {
+        /*String hours = h.replace(":00", "");
         hours = hours.replace(" - ", " ");
-        String[] allTimes = hours.split(" ");
+        String[] allTimes = hours.split(" ");*/
         int f = 0;
         int to = 0;
-        if(allTimes.length > 2) {
+        if(allTimes.length > 2 && allTimes[2]!=null && allTimes[3]!=null) {
              f = Integer.parseInt(allTimes[2]);
              to = Integer.parseInt(allTimes[3]);
         } else {
