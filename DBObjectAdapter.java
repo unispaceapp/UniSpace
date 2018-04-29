@@ -61,7 +61,7 @@ public class DBObjectAdapter {
             //String[] buildings = handleStrings(building,4, true);
             ArrayList<String> buildings = handleStrings(building);
             for (String s: buildings){
-                System.out.println(s);
+                //System.out.println(s);
             }
 
            /* String[] parsedBuildings =new String[2];
@@ -76,10 +76,10 @@ public class DBObjectAdapter {
                 i++;
             }*/
 
-            if (buildings.size()>1)
-                System.out.println("build chosen:" +buildings.get(1));
-            else
-                System.out.println("build chosen:" +buildings.get(0));
+            //if (buildings.size()>1)
+                //System.out.println("build chosen:" +buildings.get(1));
+            //else
+               // System.out.println("build chosen:" +buildings.get(0));
             //TODO falls here when there are two classrooms/buildings - put in as two different entries
             /*if (room.contains(" ")) {
                 String[] rooms = room.split(" ");
@@ -88,13 +88,13 @@ public class DBObjectAdapter {
             //String[] rooms = handleStrings(room,3, false);
             ArrayList<String> rooms = handleRooms(room);
             for (String s: rooms){
-                System.out.println(s);
+               // System.out.println(s);
             }
 
-            if (rooms.size()>1)
-                System.out.println("room chosen:" +rooms.get(1));
-            else
-                System.out.println("room chosen:" +rooms.get(0));
+//            if (rooms.size()>1)
+//                System.out.println("room chosen:" +rooms.get(1));
+//            else
+//                System.out.println("room chosen:" +rooms.get(0));
 
 
             //TODO saw that two classrooms are being taken as one, like 102203 in 507
@@ -132,6 +132,7 @@ public class DBObjectAdapter {
             String[] hours = handleHours(hour);
             classroom.SetHours(hours);
 
+            System.out.println("IN ADAPTER:");
 
             System.out.println("****   Sem: " + classroom.getSemester() + " day: " + classroom.getDay() + " building: " + classroom.getBuildingNumber() + " room: " + classroom.getClassNumber() + " Start Hour: " + classroom.getHours().get(0) + " ****");
             System.out.println();

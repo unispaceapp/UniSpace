@@ -73,7 +73,10 @@ public class MongoDBManager {
     }
 
     public boolean AddToDB(ClassroomDBObject classroom) {
-
+        if(classroom == null) {
+            return false;
+        }
+        //System.out.println(classroom.getBuildingNumber() + " " + classroom.getClassNumber());
         //checking if semester B, if not returns false
         if(classroom.getSemester()!='B'){
             return false;
@@ -99,11 +102,13 @@ public class MongoDBManager {
             ArrayList<Integer> classHours = classroom.getHours();
             Document nVal = new Document();
             for(Integer hour : classHours ) {
-                nVal.append(hours.get(hour), 1);
+                if(hour <= 19)
+                    nVal.append(hours.get(hour), 1);
             }
             Bson newValue = new Document(nVal);
             Bson updateOperationDocument = new Document("$set", newValue);
             mc.updateOne(filter, updateOperationDocument);
+
             return true;
         }
 
@@ -113,9 +118,12 @@ public class MongoDBManager {
         newClass.append("room", classroom.getClassNumber());
         ArrayList<Integer> classHours = classroom.getHours();
         for(Integer hour : classHours) {
-            newClass.remove(hours.get(hour));
-            newClass.append(hours.get(hour), 1);
+            if(hour <= 19) {
+                newClass.remove(hours.get(hour));
+                newClass.append(hours.get(hour), 1);
+            }
         }
+        System.out.println("INSERTING CLASS: " + newClass.toString());
         mc.insertOne(newClass);
 
         return true;

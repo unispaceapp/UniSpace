@@ -31,7 +31,7 @@ public class WebScraper {
 
     public WebScraper() {
         //TODO uncomment when ready
-        //DBManager = new MongoDBManager();
+        DBManager = new MongoDBManager();
         objectAdapter = new DBObjectAdapter();
     }
 
@@ -41,7 +41,7 @@ public class WebScraper {
         Document currentPage = GetFirstPage();  // GET FIRST PAGE OF COURSES
         ScrapeSinglePage(currentPage);  // SCRAPE FIRST PAGE
         //TODO do all pages, not just 2-5
-        for(int index =2 ; index < 10; index++) {  // LOOP THROUGH REST OF PAGES
+        for(int index =2 ; index < 150; index++) {  // LOOP THROUGH REST OF PAGES
             currentPage = GetNextPage(currentPage, index);
             System.out.println("************************************** page number: "+index+" *********************************************************");
             ScrapeSinglePage(currentPage);
@@ -53,7 +53,11 @@ public class WebScraper {
         try {
 
             Element table = page.getElementById("ContentPlaceHolder1_gvLessons");  //GET TABLE WITH COURSES
+            if(table == null) {
+                return;
+            }
             ArrayList<Element> t = table.getElementsByTag("tbody");
+
             Element tt = t.get(0);
             int rowCounter = 2;
             Element row = tt.children().get(rowCounter);
@@ -71,7 +75,7 @@ public class WebScraper {
                 Element cTable = tbody.get(1);
                 ClassroomDBObject classroom = objectAdapter.Convert(cTable);
                 //TODO uncomment when ready
-                //DBManager.AddToDB(classroom);
+                DBManager.AddToDB(classroom);
 
                 rowCounter++;
                 if (tt.children().get(rowCounter-1).equals(tt.children().last())){
@@ -90,7 +94,9 @@ public class WebScraper {
         Document nextPage = null;
         param.put("__EVENTTARGET","ctl00$ContentPlaceHolder1$gvLessons");
         param.put("__EVENTARGUMENT", "Page$"  + Integer.toString(pageNum) );
+
         Elements hiddDivs = prevPage.getElementsByClass("aspNetHidden");
+        System.out.println("PAGE NUM = " + pageNum + "HIDDEN = " + hiddDivs.size());
         Elements children =  hiddDivs.get(0).children();
         Node node = children.get(2);
         param.put(node.attr("name"), node.attr("value"));
