@@ -41,7 +41,7 @@ public class WebScraper {
         Document currentPage = GetFirstPage();  // GET FIRST PAGE OF COURSES
         ScrapeSinglePage(currentPage);  // SCRAPE FIRST PAGE
         //TODO do all pages, not just 2-5
-        for(int index =2 ; index < 150; index++) {  // LOOP THROUGH REST OF PAGES
+        for(int index =11 ; index < 150; index++) {  // LOOP THROUGH REST OF PAGES
             currentPage = GetNextPage(currentPage, index);
             System.out.println("************************************** page number: "+index+" *********************************************************");
             ScrapeSinglePage(currentPage);
@@ -109,8 +109,8 @@ public class WebScraper {
         try {
             nextPage = Jsoup.connect("https://shoham.biu.ac.il/BiuCoursesViewer/CoursesView.aspx?").timeout(10*1000)
                     .ignoreContentType(true)
-                    .userAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36")
-                    .cookie("ASP.NET_SessionId", "ib1bhxgycggwe15vcfoqpncc")
+                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36")
+                    .cookie("ASP.NET_SessionId", "glgjyql3c1sa34hh24i0chph")
                     .data(param).post();
         } catch (IOException e) {
             e.printStackTrace();
