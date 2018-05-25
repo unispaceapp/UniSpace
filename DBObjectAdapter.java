@@ -18,7 +18,9 @@ public class DBObjectAdapter {
         return room;
     }
 
-    private ClassroomDBObject createClassroom(String semester, String day, String hour, String building, String room) {
+
+
+    public ClassroomDBObject createClassroom(String semester, String day, String hour, String building, String room) {
         //System.out.println("Sem: " +semester + " day: "+ day + " hour: "+hour+" building: "+building+" room: "+room);
         //Might be online course, so skip it
         ClassroomDBObject classroom = new ClassroomDBObject();
