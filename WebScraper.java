@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Flips through all the pages on Shoham, and adds all pages to an array, and
+ * then scrapes each page of courses to gather information
+ */
 public class WebScraper {
 
     static final WebClient browser = new WebClient(BrowserVersion.CHROME);
@@ -29,9 +33,12 @@ public class WebScraper {
 
     }
 
+    /**
+     * Function to scrape all pages
+     */
     public void ScrapePages() {
         HtmlPage currentPage = null;
-
+        boolean morePages = true;
         try {
             currentPage = (HtmlPage) browser.getPage("https://shoham.biu.ac.il/BiuCoursesViewer/MainPage.aspx");
         } catch (Exception e) {
@@ -44,7 +51,7 @@ public class WebScraper {
             currentPage = nextAnchor.click();
             int flipCounter = 0;
             int use = 0;
-            while (flipCounter < 20) {
+            while (morePages) {
                 for (int pageNum = 2; ; pageNum++) {
                     if (flipCounter > 0) {
                         use = pageNum + 2;
@@ -56,18 +63,23 @@ public class WebScraper {
                     HtmlAnchor clickForNewPage = (HtmlAnchor) pageButton.get(0);
                     if (clickForNewPage.asText().equals("...")) {
                         currentPage = clickForNewPage.click();
-                        System.out.println("... New Page Symbol: " + clickForNewPage.asText());
                         break;
                     }
                     currentPage = clickForNewPage.click();
                     System.out.println("New Page Number: " + clickForNewPage.asText());
+
                     allPages.add(currentPage);
+                    // Last page
+                    if(clickForNewPage.asText().equals("414")) {
+                        morePages = false;
+                        break;
+                    }
 
                 }
                 flipCounter++;
-                DomNode all = (DomNode) currentPage.getByXPath("//*[@id=\"ContentPlaceHolder1_gvLessons\"]/tbody/tr[24]/td/table/tbody/tr").get(0);
 
             }
+            //Adds all courses to DB
             AddPagesToDB(allPages);
 
         } catch (Exception e) {
@@ -76,6 +88,11 @@ public class WebScraper {
     }
 
 
+    /**
+     * Runs through each page of courses, and adds each course to the Mongo DB
+     * @param pages all pages of courses
+     * @throws IOException
+     */
     private void AddPagesToDB(List<HtmlPage> pages) throws IOException {
         HtmlAnchor course = null;
         HtmlPage courseInfo = null;
@@ -84,20 +101,26 @@ public class WebScraper {
             course = (HtmlAnchor) page.getElementById("ContentPlaceHolder1_gvLessons_lnkDetails_" + Integer.toString(row - 2));
             while (course != null) {
                 courseInfo = course.click();
-                if (courseInfo.getElementById("ContentPlaceHolder1_tdBuilding").getElementsByTagName("td").size() == 0) {
+                DomElement h = courseInfo.getElementById("ContentPlaceHolder1_tdBuilding");
+                if (h != null) {
+                    if (h.getElementsByTagName("td").size() == 0) {
+                        row++;
+                        course = (HtmlAnchor) page.getElementById("ContentPlaceHolder1_gvLessons_lnkDetails_" + Integer.toString(row - 2));
+                        continue;
+                    }
+                    String building = courseInfo.getElementById("ContentPlaceHolder1_tdBuilding").getElementsByTagName("td").get(0).asText();
+                    String classroom = courseInfo.getElementById("ContentPlaceHolder1_tdRoom").getElementsByTagName("td").get(0).asText();
+                    String time = courseInfo.getElementById("ContentPlaceHolder1_tdSessionStartHour").getElementsByTagName("td").get(0).asText();
+                    String sem = courseInfo.getElementById("ContentPlaceHolder1_tdHours").asText();
+                    String day = courseInfo.getElementById("ContentPlaceHolder1_tdDayOfTheWeek").asText();
+                    ClassroomDBObject classObject = objectAdapter.createClassroom(sem, day, time, building, classroom);
+                    DBManager.AddToDB(classObject);
                     row++;
                     course = (HtmlAnchor) page.getElementById("ContentPlaceHolder1_gvLessons_lnkDetails_" + Integer.toString(row - 2));
-                    continue;
+                } else {
+                    row++;
+                    course = (HtmlAnchor) page.getElementById("ContentPlaceHolder1_gvLessons_lnkDetails_" + Integer.toString(row - 2));
                 }
-                String building = courseInfo.getElementById("ContentPlaceHolder1_tdBuilding").getElementsByTagName("td").get(0).asText();
-                String classroom = courseInfo.getElementById("ContentPlaceHolder1_tdRoom").getElementsByTagName("td").get(0).asText();
-                String time = courseInfo.getElementById("ContentPlaceHolder1_tdSessionStartHour").getElementsByTagName("td").get(0).asText();
-                String sem = courseInfo.getElementById("ContentPlaceHolder1_tdHours").asText();
-                String day = courseInfo.getElementById("ContentPlaceHolder1_tdDayOfTheWeek").asText();
-                ClassroomDBObject classObject = objectAdapter.createClassroom(sem, day, time, building, classroom);
-                DBManager.AddToDB(classObject);
-                row++;
-                course = (HtmlAnchor) page.getElementById("ContentPlaceHolder1_gvLessons_lnkDetails_" + Integer.toString(row - 2));
             }
         }
     }

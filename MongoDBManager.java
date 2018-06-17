@@ -26,6 +26,9 @@ public class MongoDBManager {
     Map<Integer, String> hours = new HashMap<>();
     private Document basicDoc;
 
+    /**
+     * Constructor initializes hours map and connects to MongoDB
+     */
     public MongoDBManager() {
         collections = new LinkedHashMap<>();
         MongoClientURI uri = new MongoClientURI("mongodb://nirchook:agent777@ds125198.mlab.com:25198/unispace");
@@ -46,9 +49,6 @@ public class MongoDBManager {
         hours.put(18,"six");
         hours.put(19,"seven");
 
-
-
-
         basicDoc = new Document();
         basicDoc.append("eight", 0);
         basicDoc.append("nine", 0);
@@ -63,7 +63,6 @@ public class MongoDBManager {
         basicDoc.append("six", 0);
         basicDoc.append("seven", 0);
 
-
         collections.put("Sunday", db.getCollection("Classrooms_Sunday"));
         collections.put("Monday", db.getCollection("Classrooms_Monday"));
         collections.put("Tuesday", db.getCollection("Classrooms_Tuesday"));
@@ -76,8 +75,8 @@ public class MongoDBManager {
         if(classroom == null) {
             return false;
         }
-        //System.out.println(classroom.getBuildingNumber() + " " + classroom.getClassNumber());
-        //checking if semester B, if not returns false
+
+        //If first semester, does not add to DB
         if(classroom.getSemester()!='B'){
             return false;
         }
@@ -123,7 +122,7 @@ public class MongoDBManager {
                 newClass.append(hours.get(hour), 1);
             }
         }
-        System.out.println("INSERTING CLASS: " + newClass.toString());
+        System.out.println("INSERTING NEW CLASS: " + newClass.toString());
         mc.insertOne(newClass);
 
         return true;

@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 
+
+/**
+ * Class to create a classroom object
+ */
 public class ClassroomDBObject {
 
     private int classNumber;
@@ -34,6 +38,10 @@ public class ClassroomDBObject {
         return semester;
     }
 
+    /**
+     * Sets the day the lesson occurs
+     * @param HebDay hebrew day
+     */
     public void setDay(String HebDay) {
         char engDay = HebDay.toCharArray()[0];
         switch(engDay) {
@@ -66,14 +74,19 @@ public class ClassroomDBObject {
         return day;
     }
 
+    /**
+     * Returns hours
+     * @return an array of hours the classroom is occupied
+     */
     public ArrayList<Integer> getHours() {
         return times;
     }
 
+    /**
+     * Sets the hours the classroom os occupied
+     * @param allTimes
+     */
     public void SetHours(String[] allTimes) {
-        /*String hours = h.replace(":00", "");
-        hours = hours.replace(" - ", " ");
-        String[] allTimes = hours.split(" ");*/
         int f = 0;
         int to = 0;
         if(allTimes.length > 2 && allTimes[2]!=null && allTimes[3]!=null) {
@@ -83,9 +96,8 @@ public class ClassroomDBObject {
              f = Integer.parseInt(allTimes[0]);
              to = Integer.parseInt(allTimes[1]);
         }
-        //System.out.println("ALL MY TIMES: ");
+        // Adds hours to classroom object
         while(f <= to-1) {
-            //System.out.println(f);
             times.add(f);
             f++;
         }
